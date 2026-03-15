@@ -6,36 +6,35 @@ services:
     container_name: calculator-db
     restart: always
     environment:
-      # make sure your DB_PASSWORD is correct mine is root
+      # Change MYSQL_ROOT_PASSWORD to your own password
       MYSQL_ROOT_PASSWORD: Test12
       MYSQL_DATABASE: calc_data
-      # Make sure your 3307 port is available
+    # Change 3307 if that port is already in use on your machine
     ports:
       - "3307:3306"
     volumes:
       - db_data:/var/lib/mysql
 
   app:
-    # image is my own account for the exercise you have to change to your account
-    #IMPORTANT docker build -t yourname/sum-product-fx .
-    # docker push yourname/sum-product-fx: last
-    # then you can change the image in the following statment
-    image: amirdirin/sum-product_fx:latest
+    # Change this to your own Docker Hub image:
+    #   docker build -t yourusername/calculator-fx-db .
+    #   docker push yourusername/calculator-fx-db:latest
+    #   then update the line below
+    image: sachinbhandari/calculator-fx-db:latest
     container_name: calculator-app
     depends_on:
       - db
     environment:
       DB_HOST: db
       DB_PORT: 3306
-      # make sure your DB_USER name is correct mine is root
+      # Change DB_USER and DB_PASSWORD to match MYSQL_ROOT_PASSWORD above
       DB_USER: root
-      # make sure your DB_PASSWORD is correct mine is root
       DB_PASSWORD: Test12
       DISPLAY: host.docker.internal:0
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix
-#    network_mode: bridge # it cancels network of docker -> docker cannot find host db.
+
 volumes:
   db_data:
 
-#  Then execute docker compose up --build
+# To start: docker compose up -d
