@@ -1,7 +1,6 @@
 pipeline {
   agent any
-  tools {
-    maven 'Maven3'
+
   }
   environment {
     PATH                     = "C:\\Program Files\\Docker\\Docker\\resources\\bin;${env.PATH}"
