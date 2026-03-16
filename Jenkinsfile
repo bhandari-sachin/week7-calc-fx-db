@@ -7,6 +7,7 @@ pipeline {
     DOCKERHUB_CREDENTIALS_ID = '11de06b8-c29b-4e4c-bf92-2d6a8d92868e'
     DOCKERHUB_REPO = 'sachinbhandari/calculator-fx-db'
     DOCKER_IMAGE_TAG = 'latest'
+    DOCKER_IMAGE_TAG_BUILD  = "${env.BUILD_NUMBER}"
   }
 
   stages {
@@ -64,15 +65,27 @@ pipeline {
     }
   }
 
-    stage('Push Docker Image to Docker Hub') {
-      steps {
-        script {
-          docker.withRegistry('https://index.docker.io/v1/', DOCKERHUB_CREDENTIALS_ID) {
-            docker.image("${DOCKERHUB_REPO}:${DOCKER_IMAGE_TAG}").push()
-          }
+        stage('Push Docker Images to Docker Hub') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: "${DOCKERHUB_CREDENTIALS_ID}",
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    bat """
+                        echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin
+
+                        docker push %BACKEND_IMAGE_REPO%:%DOCKER_IMAGE_TAG_BUILD%
+                        docker push %BACKEND_IMAGE_REPO%:%DOCKER_IMAGE_TAG_LATEST%
+
+                        docker push %FRONTEND_IMAGE_REPO%:%DOCKER_IMAGE_TAG_BUILD%
+                        docker push %FRONTEND_IMAGE_REPO%:%DOCKER_IMAGE_TAG_LATEST%
+
+                        docker logout
+                    """
+                }
+            }
         }
-      }
-    }
 
     stage('Deploy with Docker Compose') {
       steps {
