@@ -1,12 +1,12 @@
+
 pipeline {
   agent any
 
-  }
   environment {
-    PATH                     = "C:\\Program Files\\Docker\\Docker\\resources\\bin;${env.PATH}"
+    PATH = "C:\\Program Files\\Docker\\Docker\\resources\\bin;${env.PATH}"
     DOCKERHUB_CREDENTIALS_ID = '11de06b8-c29b-4e4c-bf92-2d6a8d92868e'
-    DOCKERHUB_REPO           = 'sachinbhandari/calculator-fx-db'
-    DOCKER_IMAGE_TAG         = 'latest'
+    DOCKERHUB_REPO = 'sachinbhandari/calculator-fx-db'
+    DOCKER_IMAGE_TAG = 'latest'
   }
 
   stages {
@@ -90,12 +90,15 @@ pipeline {
     success {
       echo "Pipeline succeeded. Image pushed: ${DOCKERHUB_REPO}:${DOCKER_IMAGE_TAG}"
     }
+
     failure {
       echo 'Pipeline failed. Check logs above.'
       bat 'docker compose down || exit 0'
     }
+
     cleanup {
       bat 'docker image prune -f || exit 0'
     }
   }
 }
+
