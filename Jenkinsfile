@@ -103,7 +103,7 @@ pipeline {
     stage('Verify Database') {
       steps {
         bat 'ping -n 16 127.0.0.1 > nul'
-        bat 'docker exec calculator-db mariadb -u root -pTest12 calc_data -e "SHOW TABLES; SELECT * FROM calculations;"'
+        bat 'docker exec calculator-db mariadb -u root -pTest12 calc_data -e "SHOW TABLES; SELECT * FROM calc_results;"'
       }
     }
   }
