@@ -13,7 +13,7 @@ pipeline {
 
     stage('Checkout') {
       steps {
-        git url: 'https://github.com/bhandari-sachin/week7-calc-fx-db.git'
+        git branch: 'main', url: 'https://github.com/bhandari-sachin/week7-calc-fx-db.git'
       }
     }
 
